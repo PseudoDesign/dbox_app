@@ -17,7 +17,7 @@ Feature: device software lock
   Scenario: locking cannot overwrite existing valid key
     Given the key file is valid
     And the provided locking key is valid
-    When the the device is locked
+    When the device is locked
     Then the lock device method indicates a failure
     And the key file is unchanged
 
