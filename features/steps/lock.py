@@ -17,7 +17,14 @@ def step_impl(context, reason):
     :type context: behave.runner.Context
     :type reason: str
     """
-    raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
+    if reason == "Invalid CRC":
+        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
+    elif reason == "I/O Error":
+        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
+    elif reason == "Length Invalid":
+        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
+    else:
+        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
 
 
 @given("the provided locking key is valid")
@@ -82,7 +89,12 @@ def step_impl(context, reason):
     :type context: behave.runner.Context
     :type reason: str
     """
-    raise NotImplementedError(u'STEP: And writing the key file fails due to <reason>')
+    if reason == "Write I/O Error":
+        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
+    elif reason == "Invalid Readback":
+        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
+    else:
+        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
 
 
 @given("the provided unlocking key is valid")
