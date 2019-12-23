@@ -44,26 +44,16 @@ class TestLock(TestCase):
 
     @patch.object(SecureLock, "_check_crc")
     @patch.object(SecureLock, "_load_lock_file")
-    def test_lock_is_locked_when_key_file_crc_is_valid(self, mock_check_crc, mock_lock_file):
+    def test_lock_is_locked_when_key_file_crc_is_valid(self, mock_lock_file, mock_check_crc):
         mock_check_crc.return_value = True
+        mock_lock_file.return_value = b'', 1
         self.assertTrue(SecureLock("test_path").is_locked)
 
 # Submethod Testing
 
-    def test_check_crc_returns_false_when_missing_required_value(self):
-        # CRC is missing
-        keyfile_data = {
-            'hash': "hash",
-        }
-        self.assertFalse(SecureLock._check_crc(keyfile_data))
-
     def test_check_crc_returns_false_when_required_value_is_invalid_type(self):
         # CRC is None
-        keyfile_data = {
-            'hash': None,
-            'crc': "this is a string",
-        }
-        self.assertFalse(SecureLock._check_crc(keyfile_data))
+        self.assertFalse(SecureLock._check_crc(None, "string"))
 
     def test_check_crc_returns_true_when_values_are_correct(self):
         # CRC is None
@@ -71,4 +61,8 @@ class TestLock(TestCase):
             'hash': b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
             'crc': 65473797,
         }
-        self.assertTrue(SecureLock._check_crc(keyfile_data))
+        self.assertTrue(
+            SecureLock._check_crc(
+                b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
+                65473797
+            ))

@@ -34,31 +34,33 @@ class SecureLock:
         :return:
         """
         try:
-            lock_info = self._load_lock_file()
+            my_hash, crc = self._load_lock_file()
             # If the CRC is valid...
-            if self._check_crc(lock_info):
+            if self._check_crc(my_hash, crc):
                 return True
             else:
                 return False
-        except (IOError, yaml.YAMLError):
+        except (IOError, yaml.YAMLError, KeyError, TypeError):
             return False
 
     @staticmethod
-    def _check_crc(keyfile_data: {}) -> bool:
+    def _check_crc(my_hash: b'', crc: int) -> bool:
         """
         Verify the CRC on the keyfile data
-        :param keyfile_data:
+        :param my_hash:
+        :param crc: crc32 of hash
         :return: true if the CRC is valid, else false
         """
         try:
-            return keyfile_data['crc'] == crc32(keyfile_data['hash'])
-        except (KeyError, TypeError):
+            return crc == crc32(my_hash)
+        except (TypeError):
             return False
 
-    def _load_lock_file(self) -> {}:
+    def _load_lock_file(self) -> (b'', int):
         """
         Load the lock file; return the yaml-parsed data that's inside
         :return:
         """
         with open(self.__lock_path, 'r') as fpt:
-            return yaml.safe_load(fpt)
+            data = yaml.safe_load(fpt)
+        return data['hash'], data['crc']

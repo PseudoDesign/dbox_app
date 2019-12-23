@@ -12,6 +12,7 @@ Feature: device software lock
       | invalid_file           |
       | invalid_crc.yaml       |
       | invalid_yaml.yaml      |
+      | missing_parameter.yaml |
 
   Scenario: unlocks when the file does not exist
     Given the sample key file does not exist
