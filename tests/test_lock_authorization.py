@@ -61,6 +61,16 @@ class TestLock(TestCase):
         mock_lock_file.return_value = b'', 1
         self.assertFalse(SecureLock("test_path")._is_file_valid)
 
+    @patch.object(SecureLock, "_check_crc")
+    @patch.object(SecureLock, "_load_lock_file")
+    def test_get_file_info_returns_none_for_hash_and_crc_when_file_is_invalid(self, mock_lock_file, mock_check_crc):
+        mock_check_crc.side_effect = TypeError
+        mock_lock_file.return_value = b'', 1
+        is_valid, my_hash, crc = SecureLock("test_path")._get_file_info()
+        self.assertFalse(is_valid)
+        self.assertIsNone(my_hash)
+        self.assertIsNone(crc)
+
 # Submethod Testing
 
     def test_check_crc_returns_true_when_values_are_correct(self):
