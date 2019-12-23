@@ -53,7 +53,6 @@ class TestLock(TestCase):
     def test_check_crc_returns_false_when_missing_required_value(self):
         # CRC is missing
         keyfile_data = {
-            'salt': "salt",
             'hash': "hash",
         }
         self.assertFalse(SecureLock._check_crc(keyfile_data))
@@ -61,8 +60,7 @@ class TestLock(TestCase):
     def test_check_crc_returns_false_when_required_value_is_invalid_type(self):
         # CRC is None
         keyfile_data = {
-            'salt': b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4ku',
-            'hash': "this is a string",
+            'hash': None,
             'crc': "this is a string",
         }
         self.assertFalse(SecureLock._check_crc(keyfile_data))
@@ -70,8 +68,7 @@ class TestLock(TestCase):
     def test_check_crc_returns_true_when_values_are_correct(self):
         # CRC is None
         keyfile_data = {
-            'salt': b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4ku',
             'hash': b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
-            'crc': 3371285754,
+            'crc': 65473797,
         }
         self.assertTrue(SecureLock._check_crc(keyfile_data))

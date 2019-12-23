@@ -51,7 +51,7 @@ class SecureLock:
         :return: true if the CRC is valid, else false
         """
         try:
-            return keyfile_data['crc'] == crc32(keyfile_data['hash'] + keyfile_data['salt'])
+            return keyfile_data['crc'] == crc32(keyfile_data['hash'])
         except (KeyError, TypeError):
             return False
 
