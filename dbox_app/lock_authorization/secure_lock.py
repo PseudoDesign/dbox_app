@@ -43,6 +43,21 @@ class SecureLock:
         except (IOError, yaml.YAMLError, KeyError, TypeError):
             return False
 
+    def _get_file_info(self) -> (bool, b'', int):
+        """
+        Returns information about the lock file
+        :return: is_valid, hash, crc
+        """
+        try:
+            my_hash, crc = self._load_lock_file()
+            # If the CRC is valid...
+            if self._check_crc(my_hash, crc):
+                return True, my_hash, crc
+            else:
+                return False, None, None
+        except (IOError, yaml.YAMLError, KeyError, TypeError):
+            return False, None, None
+
     @staticmethod
     def _check_crc(my_hash: b'', crc: int) -> bool:
         """
