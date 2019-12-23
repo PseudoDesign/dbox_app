@@ -60,4 +60,5 @@ class SecureLock:
         Load the lock file; return the yaml-parsed data that's inside
         :return:
         """
-        return {}
+        with open(self.__lock_path, 'r') as fpt:
+            return yaml.safe_load(fpt)

@@ -43,7 +43,8 @@ class TestLock(TestCase):
         self.assertTrue(SecureLock("test_path").is_unlocked)
 
     @patch.object(SecureLock, "_check_crc")
-    def test_lock_is_locked_when_key_file_crc_is_valid(self, mock_check_crc):
+    @patch.object(SecureLock, "_load_lock_file")
+    def test_lock_is_locked_when_key_file_crc_is_valid(self, mock_check_crc, mock_lock_file):
         mock_check_crc.return_value = True
         self.assertTrue(SecureLock("test_path").is_locked)
 
