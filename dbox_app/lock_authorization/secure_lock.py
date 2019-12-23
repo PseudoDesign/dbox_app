@@ -1,5 +1,7 @@
 import yaml
 from binascii import crc32
+from bcrypt import checkpw
+import os
 
 
 class SecureLock:
@@ -46,6 +48,23 @@ class SecureLock:
             if self._is_file_valid:
                 return True
         return False
+
+    def unlock(self, unlocking_key: str) -> bool:
+        """
+        Unlock the box with the provided key
+        :param unlocking_key:
+        :return: True if the device is unlocked, else false
+        """
+        is_valid, my_hash, crc = self._get_file_info()
+        if is_valid:
+            if checkpw(unlocking_key.encode("utf-8"), my_hash):
+                try:
+                    self._remove_lock_file()
+                except IOError:
+                    return False
+            else:
+                return False
+        return True
 
     @property
     def _is_file_valid(self) -> bool:
@@ -100,3 +119,11 @@ class SecureLock:
         """
         with open(self.__lock_path, 'w') as fpt:
             yaml.safe_dump({"hash": my_hash, "crc": crc}, fpt)
+
+    def _remove_lock_file(self):
+        """
+        remove the lock file
+        :return:
+        """
+        if os.path.exists(self.__lock_path):
+            os.remove(self.__lock_path)

@@ -120,6 +120,44 @@ class TestLock(TestCase):
         lock = SecureLock("lock file")
         self.assertFalse(lock.lock(self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC))
 
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_remove_lock_file")
+    def test_unlock_method_fails_when_remove_lock_file_raises_ioerror(self, mock_remove_lock_file,
+                                                                      mock_get_file_info):
+        mock_remove_lock_file.side_effect = IOError()
+        mock_get_file_info.return_value = (True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC)
+        lock = SecureLock("lock file")
+        self.assertFalse(lock.unlock(self.EXAMPLE_VALID_UNLOCKING_KEY))
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch("bcrypt.checkpw")
+    @patch.object(SecureLock, "_remove_lock_file")
+    def test_unlock_fails_when_unlocking_key_is_invalid(self, mock_remove_lock_file,
+                                                        mock_checkpw,
+                                                        mock_get_file_info):
+        mock_get_file_info.return_value = (True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC)
+        mock_checkpw.return_value = False
+        lock = SecureLock("lock file")
+        self.assertFalse(lock.unlock("eee"))
+        mock_remove_lock_file.assert_not_called()
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_remove_lock_file")
+    def test_unlock_passes_when_key_is_valid(self, mock_remove_lock_file,
+                                             mock_get_file_info):
+        mock_get_file_info.return_value = (True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC)
+        lock = SecureLock("lock file")
+        self.assertTrue(lock.unlock(self.EXAMPLE_VALID_UNLOCKING_KEY))
+        mock_remove_lock_file.assert_called()
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_remove_lock_file")
+    def test_unlock_passes_device_is_already_unlocked(self, mock_remove_lock_file,
+                                             mock_get_file_info):
+        mock_get_file_info.return_value = (False, None, None)
+        lock = SecureLock("lock file")
+        self.assertTrue(lock.unlock(self.EXAMPLE_VALID_UNLOCKING_KEY))
+
     # Submethod Testing
 
     @patch.object(SecureLock, "_check_crc")

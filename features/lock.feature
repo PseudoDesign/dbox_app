@@ -57,8 +57,7 @@ Feature: device software lock
   Scenario: unlocking when key file is invalid
     Given the device key is invalid
     When the device is unlocked
-    Then the key file is removed
-    And the unlock device method indicates a success
+    Then the unlock device method indicates a success
 
   Scenario: unlocking when the key file cannot be removed
     Given the device is locked
