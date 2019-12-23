@@ -27,6 +27,15 @@ class SecureLock:
         """
         return not self.is_locked
 
+    def lock(self, hash: b'', crc: int) -> bool:
+        """
+        Attempt to lock the device with the provided hash
+        :param hash:
+        :param crc:
+        :return: True if the device was locked with the provided info, else false
+        """
+        pass
+
     @property
     def _is_file_valid(self) -> bool:
         """
@@ -76,3 +85,12 @@ class SecureLock:
         with open(self.__lock_path, 'r') as fpt:
             data = yaml.safe_load(fpt)
         return data['hash'], data['crc']
+
+    def _save_lock_file(self, my_hash: b'', crc: int) -> bool:
+        """
+        save the provided data to a lock file
+        :return: True if save was successful, else false
+        """
+        with open(self.__lock_path, 'w') as fpt:
+            yaml.safe_dump({"hash": my_hash, "crc": crc}, fpt)
+        return (my_hash, crc) == self._load_lock_file()

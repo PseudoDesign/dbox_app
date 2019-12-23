@@ -6,7 +6,12 @@ import yaml
 
 class TestLock(TestCase):
 
-# Lock and Unlock testing
+    EXAMPLE_HASH = b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba'
+    EXAMPLE_VALID_CRC = 65473797
+    EXAMPLE_VALID_UNLOCKING_KEY = '''qp3D3oS@"5u>&s;ctt"=5ilT~+{rFo'''
+
+    # Lock and Unlock testing
+
     @patch.object(SecureLock, "_is_file_valid", new_callable=PropertyMock)
     def test_lock_is_locked_when_key_file_is_valid(self, mock_is_file_valid):
         mock_is_file_valid.return_value = True
@@ -54,6 +59,14 @@ class TestLock(TestCase):
         mock_lock_file.return_value = b'', 1
         self.assertTrue(SecureLock("test_path").is_locked)
 
+    @patch.object(SecureLock, "_get_file_info")
+    def test_lock_method_fails_when_existing_file_is_valid(self, mock_get_file_info):
+        mock_get_file_info.return_value = True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC
+        lock = SecureLock("lock file")
+        self.assertFalse(lock.lock(self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC))
+
+    # Submethod Testing
+
     @patch.object(SecureLock, "_check_crc")
     @patch.object(SecureLock, "_load_lock_file")
     def test_file_is_not_valid_when_crc_has_bad_type(self, mock_lock_file, mock_check_crc):
@@ -71,16 +84,14 @@ class TestLock(TestCase):
         self.assertIsNone(my_hash)
         self.assertIsNone(crc)
 
-# Submethod Testing
-
     def test_check_crc_returns_true_when_values_are_correct(self):
         self.assertTrue(SecureLock._check_crc(
-            b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
-            65473797
+            self.EXAMPLE_HASH,
+            self.EXAMPLE_VALID_CRC
         ))
 
     def test_check_crc_returns_false_when_values_are_incorrect(self):
         self.assertFalse(SecureLock._check_crc(
-            b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
+            self.EXAMPLE_HASH,
             1
         ))

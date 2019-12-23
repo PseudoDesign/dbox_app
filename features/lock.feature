@@ -66,7 +66,7 @@ Feature: device software lock
 
   Scenario: unlocking with invalid key when locked
     Given the device is locked
-    And the key file is valid
+    And the sample key file valid-0.yaml
     And the provided unlocking key is invalid
     When the device is unlocked
     Then the unlock device method indicates a failure
