@@ -10,7 +10,11 @@ class Lock:
         self.__lock_path = lock_path
 
     @property
-    def is_file_valid(self):
+    def is_locked(self):
+        return self._is_file_valid
+
+    @property
+    def _is_file_valid(self):
         """
         Returns if the lock file at self.__lock_path exists and is valid, else false
         :return:
