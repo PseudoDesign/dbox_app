@@ -60,10 +60,56 @@ class TestLock(TestCase):
         self.assertTrue(SecureLock("test_path").is_locked)
 
     @patch.object(SecureLock, "_get_file_info")
-    def test_lock_method_fails_when_existing_file_is_valid(self, mock_get_file_info):
+    def test_lock_method_fails_when_existing_file_is_valid_and_is_not_the_same_data(self, mock_get_file_info):
         mock_get_file_info.return_value = True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC
         lock = SecureLock("lock file")
+        self.assertFalse(lock.lock(b'', 1))
+
+    @patch.object(SecureLock, "_get_file_info")
+    def test_lock_method_fails_when_existing_file_is_invalid_and_new_crc_is_invalid(self, mock_get_file_info):
+        mock_get_file_info.return_value = False, None, None
+        lock = SecureLock("lock file")
+        self.assertFalse(lock.lock(self.EXAMPLE_HASH, 1))
+
+    @patch.object(SecureLock, "_get_file_info")
+    def test_lock_method_passes_when_existing_file_is_valid_and_data_matches(self, mock_get_file_info):
+        mock_get_file_info.return_value = True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC
+        lock = SecureLock("lock file")
+        self.assertTrue(lock.lock(self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC))
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_save_lock_file")
+    def test_lock_method_does_not_call_save_lock_file_when_existing_file_is_valid(self, mock_save_lock_file,
+                                                                                  mock_get_file_info):
+        mock_get_file_info.return_value = True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC
+        lock = SecureLock("lock file")
+        lock.lock(b'', self.EXAMPLE_VALID_CRC)
+        mock_save_lock_file.assert_not_called()
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_save_lock_file")
+    def test_lock_method_does_not_call_save_lock_file_when_new_crc_is_invalid(self, mock_save_lock_file,
+                                                                                  mock_get_file_info):
+        mock_get_file_info.return_value = False, None, None
+        lock = SecureLock("lock file")
+        lock.lock(self.EXAMPLE_HASH, 1)
+        mock_save_lock_file.assert_not_called()
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_save_lock_file")
+    def test_lock_method_fails_when_readback_of_saved_data_fails(self, mock_save_lock_file,
+                                                                              mock_get_file_info):
+        mock_get_file_info.return_value = False, None, None
+        lock = SecureLock("lock file")
         self.assertFalse(lock.lock(self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC))
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_save_lock_file")
+    def test_lock_method_fails_when_readback_of_saved_data_passes(self, mock_save_lock_file,
+                                                                 mock_get_file_info):
+        mock_get_file_info.side_effect = [(False, None, None), (True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC)]
+        lock = SecureLock("lock file")
+        self.assertTrue(lock.lock(self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC))
 
     # Submethod Testing
 

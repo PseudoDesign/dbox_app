@@ -27,14 +27,27 @@ class SecureLock:
         """
         return not self.is_locked
 
-    def lock(self, hash: b'', crc: int) -> bool:
+    def lock(self, new_hash: b'', new_crc: int) -> bool:
         """
         Attempt to lock the device with the provided hash
-        :param hash:
-        :param crc:
-        :return: True if the device was locked with the provided info, else false
+        :param new_hash:
+        :param new_crc:
+        :return: True if the device is locked with the provided info, else false
         """
-        pass
+        is_locked, old_hash, old_crc = self._get_file_info()
+        if is_locked:
+            if old_hash == new_hash and old_crc == new_crc:
+                return True
+            else:
+                return False
+        if self._check_crc(new_hash, new_crc):
+            self._save_lock_file(new_hash, new_crc)
+            if self._is_file_valid:
+                return True
+            else:
+                return False
+        else:
+            return False
 
     @property
     def _is_file_valid(self) -> bool:
@@ -42,15 +55,8 @@ class SecureLock:
         Returns if the lock file at self.__lock_path exists and is valid, else false
         :return:
         """
-        try:
-            my_hash, crc = self._load_lock_file()
-            # If the CRC is valid...
-            if self._check_crc(my_hash, crc):
-                return True
-            else:
-                return False
-        except (IOError, yaml.YAMLError, KeyError, TypeError):
-            return False
+        is_valid, my_hash, crc = self._get_file_info()
+        return is_valid
 
     def _get_file_info(self) -> (bool, b'', int):
         """
@@ -86,11 +92,10 @@ class SecureLock:
             data = yaml.safe_load(fpt)
         return data['hash'], data['crc']
 
-    def _save_lock_file(self, my_hash: b'', crc: int) -> bool:
+    def _save_lock_file(self, my_hash: b'', crc: int):
         """
         save the provided data to a lock file
-        :return: True if save was successful, else false
+        :return:
         """
         with open(self.__lock_path, 'w') as fpt:
             yaml.safe_dump({"hash": my_hash, "crc": crc}, fpt)
-        return (my_hash, crc) == self._load_lock_file()
