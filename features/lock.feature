@@ -1,18 +1,21 @@
 Feature: device software lock
 
   Scenario: locks when key is valid
-    Given the key file is valid
+    Given the sample key file valid.yaml
     Then the device is locked
 
   Scenario Outline: unlocks when key is invalid (CRC error, etc)
-    Given the key file is invalid due to <reason>
+    Given the sample key file {invalid_file}
     Then the device is unlocked
 
     Examples:
-      | reason            |
-      | Invalid CRC       |
-      | I/O Error         |
-      | Length Invalid    |
+      | invalid_file           |
+      | invalid_crc.yaml       |
+      | invalid_yaml.yaml      |
+
+  Scenario: unlocks when the file does not exist
+    Given the sample key file does not exist
+    Then the device is unlocked
 
   Scenario: locking cannot overwrite existing valid key
     Given the key file is valid

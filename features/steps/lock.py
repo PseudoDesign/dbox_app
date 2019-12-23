@@ -1,30 +1,8 @@
 from behave import *
+from features import utils
+import os
 
 use_step_matcher("re")
-
-
-@given("the key file is valid")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Given the key file is valid')
-
-
-@given("the key file is invalid due to (?P<reason>.+)")
-def step_impl(context, reason):
-    """
-    :type context: behave.runner.Context
-    :type reason: str
-    """
-    if reason == "Invalid CRC":
-        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
-    elif reason == "I/O Error":
-        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
-    elif reason == "Length Invalid":
-        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
-    else:
-        raise NotImplementedError(u'STEP: Given the key file is invalid due to <reason>')
 
 
 @given("the provided locking key is valid")
