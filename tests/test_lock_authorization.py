@@ -115,15 +115,8 @@ class TestLock(TestCase):
 
     @patch.object(SecureLock, "_check_crc")
     @patch.object(SecureLock, "_load_lock_file")
-    def test_file_is_not_valid_when_crc_has_bad_type(self, mock_lock_file, mock_check_crc):
-        mock_check_crc.side_effect = TypeError
-        mock_lock_file.return_value = b'', 1
-        self.assertFalse(SecureLock("test_path")._is_file_valid)
-
-    @patch.object(SecureLock, "_check_crc")
-    @patch.object(SecureLock, "_load_lock_file")
     def test_get_file_info_returns_none_for_hash_and_crc_when_file_is_invalid(self, mock_lock_file, mock_check_crc):
-        mock_check_crc.side_effect = TypeError
+        mock_check_crc.return_value = False
         mock_lock_file.return_value = b'', 1
         is_valid, my_hash, crc = SecureLock("test_path")._get_file_info()
         self.assertFalse(is_valid)
@@ -140,4 +133,10 @@ class TestLock(TestCase):
         self.assertFalse(SecureLock._check_crc(
             self.EXAMPLE_HASH,
             1
+        ))
+
+    def test_check_crc_returns_false_when_types_are_incorrect(self):
+        self.assertFalse(SecureLock._check_crc(
+            self.EXAMPLE_HASH,
+            None
         ))

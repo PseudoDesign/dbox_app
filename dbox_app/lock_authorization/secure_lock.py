@@ -70,7 +70,7 @@ class SecureLock:
                 return True, my_hash, crc
             else:
                 return False, None, None
-        except (IOError, yaml.YAMLError, KeyError, TypeError):
+        except (IOError, yaml.YAMLError, KeyError):
             return False, None, None
 
     @staticmethod
@@ -81,7 +81,10 @@ class SecureLock:
         :param crc: crc32 of hash
         :return: true if the CRC is valid, else false
         """
-        return crc == crc32(my_hash)
+        try:
+            return crc == crc32(my_hash)
+        except TypeError:
+            return False
 
     def _load_lock_file(self) -> (b'', int):
         """
