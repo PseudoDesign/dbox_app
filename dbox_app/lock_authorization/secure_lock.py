@@ -1,4 +1,5 @@
 import yaml
+from binascii import crc32
 
 
 class SecureLock:
@@ -34,17 +35,22 @@ class SecureLock:
         """
         try:
             lock_info = self._load_lock_file()
+            # If the CRC is valid...
+            if self._check_crc(lock_info):
+                return True
+            else:
+                return False
         except (IOError, yaml.YAMLError):
             return False
-        return lock_info
 
-    def _check_crc(self, keyfile_data: {}) -> bool:
+    @staticmethod
+    def _check_crc(keyfile_data: {}) -> bool:
         """
         Verify the CRC on the keyfile data
         :param keyfile_data:
         :return: true if the CRC is valid, else false
         """
-        pass
+        return True
 
     def _load_lock_file(self) -> {}:
         """
