@@ -38,19 +38,15 @@ class SecureLock:
         if is_locked:
             if old_hash == new_hash and old_crc == new_crc:
                 return True
-            else:
-                return False
-        if self._check_crc(new_hash, new_crc):
+        elif self._check_crc(new_hash, new_crc):
             try:
                 self._save_lock_file(new_hash, new_crc)
             except IOError:
                 return False
+            # Make sure the file is valid
             if self._is_file_valid:
                 return True
-            else:
-                return False
-        else:
-            return False
+        return False
 
     @property
     def _is_file_valid(self) -> bool:
