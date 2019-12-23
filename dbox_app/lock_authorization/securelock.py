@@ -1,6 +1,7 @@
 import yaml
 
-class Lock:
+
+class SecureLock:
     """
     Manages a secure key lock, where the lock is stored on the filesystem.
     """
@@ -37,5 +38,17 @@ class Lock:
             return False
         return lock_info
 
+    def _check_crc(self, keyfile_data: {}) -> bool:
+        """
+        Verify the CRC on the keyfile data
+        :param keyfile_data:
+        :return: true if the CRC is valid, else false
+        """
+        pass
+
     def _load_lock_file(self) -> {}:
+        """
+        Load the lock file; return the yaml-parsed data that's inside
+        :return:
+        """
         return {}

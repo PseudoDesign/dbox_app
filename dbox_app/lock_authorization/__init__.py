@@ -1,2 +1,2 @@
-from .lock import Lock
+from .securelock import SecureLock
 
