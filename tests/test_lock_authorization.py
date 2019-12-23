@@ -64,9 +64,13 @@ class TestLock(TestCase):
 # Submethod Testing
 
     def test_check_crc_returns_true_when_values_are_correct(self):
-        # CRC is None
-        self.assertTrue(
-            SecureLock._check_crc(
-                b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
-                65473797
-            ))
+        self.assertTrue(SecureLock._check_crc(
+            b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
+            65473797
+        ))
+
+    def test_check_crc_returns_false_when_values_are_incorrect(self):
+        self.assertFalse(SecureLock._check_crc(
+            b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
+            1
+        ))
