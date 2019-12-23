@@ -18,7 +18,7 @@ Feature: device software lock
 
   Scenario: unlocks when the file does not exist
     Given the sample key file does not exist
-
+    When the state of the lock is queried
     Then the device is unlocked
 
   Scenario: locking cannot overwrite existing valid key

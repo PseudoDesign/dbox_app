@@ -83,6 +83,14 @@ def step_impl(context):
     raise NotImplementedError(u'STEP: And the provided unlocking key is valid')
 
 
+@when("the state of the lock is queried")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    raise NotImplementedError(u'STEP: When the state of the lock is queried')
+
+
 @when("the device is locked")
 def step_impl(context):
     """
@@ -169,3 +177,4 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     raise NotImplementedError(u'STEP: And the key file contains the provided locking key')
+
