@@ -43,7 +43,6 @@ class SecureLock:
                 self._save_lock_file(new_hash, new_crc)
             except IOError:
                 return False
-            # Make sure the file is valid
             if self._is_file_valid:
                 return True
         return False
