@@ -65,7 +65,7 @@ Feature: device software lock
     And the provided unlocking key is valid
     And erasing the key file fails
     When the device is unlocked
-    Then the unlock device method indicates a success
+    Then the unlock device method indicates a failure
 
   Scenario: unlocking with invalid key when locked
     Given the device is locked
