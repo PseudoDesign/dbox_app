@@ -50,7 +50,10 @@ class SecureLock:
         :param keyfile_data:
         :return: true if the CRC is valid, else false
         """
-        return True
+        try:
+            return keyfile_data['crc'] == crc32(keyfile_data['hash'] + keyfile_data['salt'])
+        except (KeyError, TypeError):
+            return False
 
     def _load_lock_file(self) -> {}:
         """
