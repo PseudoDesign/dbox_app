@@ -14,6 +14,10 @@ class Lock:
         return self._is_file_valid
 
     @property
+    def is_unlocked(self):
+        return not self.is_locked
+
+    @property
     def _is_file_valid(self):
         """
         Returns if the lock file at self.__lock_path exists and is valid, else false
