@@ -37,6 +37,11 @@ class TestLock(TestCase):
         mock_load_lock_file.side_effect = yaml.YAMLError()
         self.assertTrue(SecureLock("test_path").is_unlocked)
 
+    @patch.object(SecureLock, "_load_lock_file")
+    def test_lock_is_unlocked_when_key_file_yaml_file_is_missing_required_parameters(self, mock_load_lock_file):
+        mock_load_lock_file.side_effect = KeyError()
+        self.assertTrue(SecureLock("test_path").is_unlocked)
+
     @patch.object(SecureLock, "_check_crc")
     def test_lock_is_unlocked_when_key_file_crc_is_invalid(self, mock_check_crc):
         mock_check_crc.return_value = False
@@ -49,18 +54,17 @@ class TestLock(TestCase):
         mock_lock_file.return_value = b'', 1
         self.assertTrue(SecureLock("test_path").is_locked)
 
-# Submethod Testing
+    @patch.object(SecureLock, "_check_crc")
+    @patch.object(SecureLock, "_load_lock_file")
+    def test_file_is_not_valid_when_crc_has_bad_type(self, mock_lock_file, mock_check_crc):
+        mock_check_crc.side_effect = TypeError
+        mock_lock_file.return_value = b'', 1
+        self.assertFalse(SecureLock("test_path")._is_file_valid)
 
-    def test_check_crc_returns_false_when_required_value_is_invalid_type(self):
-        # CRC is None
-        self.assertFalse(SecureLock._check_crc(None, "string"))
+# Submethod Testing
 
     def test_check_crc_returns_true_when_values_are_correct(self):
         # CRC is None
-        keyfile_data = {
-            'hash': b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',
-            'crc': 65473797,
-        }
         self.assertTrue(
             SecureLock._check_crc(
                 b'$2b$10$wRbzQ/sxYiu/k7Z0S0P4kukv/mFb/aWrK4lXjcyhgGfAW8TSB3vba',

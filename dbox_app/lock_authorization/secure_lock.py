@@ -51,15 +51,12 @@ class SecureLock:
         :param crc: crc32 of hash
         :return: true if the CRC is valid, else false
         """
-        try:
-            return crc == crc32(my_hash)
-        except (TypeError):
-            return False
+        return crc == crc32(my_hash)
 
     def _load_lock_file(self) -> (b'', int):
         """
         Load the lock file; return the yaml-parsed data that's inside
-        :return:
+        :return: hash, crc
         """
         with open(self.__lock_path, 'r') as fpt:
             data = yaml.safe_load(fpt)
