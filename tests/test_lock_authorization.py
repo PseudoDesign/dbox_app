@@ -105,11 +105,20 @@ class TestLock(TestCase):
 
     @patch.object(SecureLock, "_get_file_info")
     @patch.object(SecureLock, "_save_lock_file")
-    def test_lock_method_fails_when_readback_of_saved_data_passes(self, mock_save_lock_file,
+    def test_lock_method_passes_when_readback_of_saved_data_passes(self, mock_save_lock_file,
                                                                  mock_get_file_info):
         mock_get_file_info.side_effect = [(False, None, None), (True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC)]
         lock = SecureLock("lock file")
         self.assertTrue(lock.lock(self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC))
+
+    @patch.object(SecureLock, "_get_file_info")
+    @patch.object(SecureLock, "_save_lock_file")
+    def test_lock_method_fails_save_lock_file_raises_ioerror(self, mock_save_lock_file,
+                                                            mock_get_file_info):
+        mock_save_lock_file.side_effect = IOError()
+        mock_get_file_info.side_effect = [(False, None, None), (True, self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC)]
+        lock = SecureLock("lock file")
+        self.assertFalse(lock.lock(self.EXAMPLE_HASH, self.EXAMPLE_VALID_CRC))
 
     # Submethod Testing
 

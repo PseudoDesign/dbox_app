@@ -41,7 +41,10 @@ class SecureLock:
             else:
                 return False
         if self._check_crc(new_hash, new_crc):
-            self._save_lock_file(new_hash, new_crc)
+            try:
+                self._save_lock_file(new_hash, new_crc)
+            except IOError:
+                return False
             if self._is_file_valid:
                 return True
             else:
