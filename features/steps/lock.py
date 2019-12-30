@@ -37,54 +37,6 @@ def step_impl(context):
     context.locking_key = lock_authorization.SecureLock.generate_keyset()
 
 
-@given("the device key is invalid")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Given the device key is invalid')
-
-
-@given("the device is locked")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Then the device is locked')
-
-
-@given("the device is unlocked")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Then the device is locked')
-
-
-@given("erasing the key file fails")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: And erasing the key file fails')
-
-
-@given("the provided unlocking key is invalid")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: And the provided unlocking key is invalid')
-
-
-@given("device is unlocked")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Given device is unlocked')
-
-
 @given("writing the key file fails due to (?P<reason>.+)")
 def step_impl(context, reason):
     """
