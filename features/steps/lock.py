@@ -18,6 +18,17 @@ def step_impl(context, filename):
         context.test_lock = lock_authorization.SecureLock(context.sample_key_file)
 
 
+@given("the sample unlocking key {filename}")
+def step_impl(context, filename):
+    """
+        :type context: behave.runner.Context
+        """
+    if not hasattr(context, "unlocking_key"):
+        file = os.path.join(samples.SAMPLES_DIRECTORY, "unlocking_key", filename)
+        with open(file, 'r') as fpt:
+            context.unlocking_key = fpt.readline()
+
+
 @given("the provided locking key is valid")
 def step_impl(context):
     """
@@ -120,31 +131,19 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: Then the device is unlocked')
+    context.test_lock_unlocking_result = context.test_lock.unlock(context.unlocking_key)
 
 
-@then("the key file is removed")
-def step_impl(context):
+@then("the unlock device method indicates a {status}")
+def step_impl(context, status):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: Then the key file is removed')
-
-
-@then("the unlock device method indicates a success")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: And the unlock device method indicates a success')
-
-
-@then("the unlock device method indicates a failure")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Then the unlock device method indicates a failure')
+    if status == "failure":
+        status = False
+    elif status == "success":
+        status = True
+    assert context.test_lock_unlocking_result is status
 
 
 @then("the device is {lock_state}")
@@ -190,3 +189,11 @@ def step_impl(context):
     assert is_valid is True
     assert my_hash == context.locking_key["hash"]
     assert crc == context.locking_key["crc"]
+
+
+@then("the key file is removed")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    assert os.path.exists(context.sample_key_file) is False

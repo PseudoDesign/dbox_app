@@ -158,8 +158,6 @@ class TestLock(TestCase):
         lock = SecureLock("lock file")
         self.assertTrue(lock.unlock(self.EXAMPLE_VALID_UNLOCKING_KEY))
 
-    # Submethod Testing
-
     @patch.object(SecureLock, "_check_crc")
     @patch.object(SecureLock, "_load_lock_file")
     def test_get_file_info_returns_none_for_hash_and_crc_when_file_is_invalid(self, mock_lock_file, mock_check_crc):

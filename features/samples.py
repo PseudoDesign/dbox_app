@@ -11,7 +11,8 @@ import os
 from features.utils import TempUtils
 from datetime import timedelta, datetime
 
-STEPS_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+FEATURES_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+SAMPLES_DIRECTORY = os.path.join(FEATURES_DIRECTORY, "samples")
 
 
 def load_file(context, subtype, filename, last_modified=timedelta(days=-7)):
@@ -25,7 +26,7 @@ def load_file(context, subtype, filename, last_modified=timedelta(days=-7)):
     if filename == "does not exist" or filename == "None":
         setattr(context, "sample_{}_file".format(subtype), None)
     else:
-        file = os.path.join(STEPS_DIRECTORY, "samples", subtype, filename)
+        file = os.path.join(FEATURES_DIRECTORY, "samples", subtype, filename)
         tmp_file = TempUtils.copy_file_to_temp(file, target_subpath=os.path.join(context.feature.name, subtype))
         setattr(context, "sample_{}_file".format(subtype), tmp_file)
         setattr(context, "sample_{}_file_last_modified".format(subtype), os.path.getmtime(tmp_file))

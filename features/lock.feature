@@ -45,8 +45,8 @@ Feature: device software lock
 #    | Invalid Readback    |
 
   Scenario: unlocking with valid key when locked
-    Given the device is locked
-    And the provided unlocking key is valid
+    Given the sample key file valid-0.yaml
+    And the sample unlocking key valid-0
     When the device is unlocked
     Then the key file is removed
     And the unlock device method indicates a success
