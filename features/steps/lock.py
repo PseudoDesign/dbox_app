@@ -1,8 +1,18 @@
 from behave import *
 from features import utils
 import os
+from features import samples
+from dbox_app import lock_authorization
 
-use_step_matcher("re")
+
+@given("the sample key file {filename}")
+def step_impl(context, filename):
+    """
+    :type context: behave.runner.Context
+    """
+    samples.load_file(context, "key", filename)
+    if not hasattr(context, "test_lock"):
+        context.test_lock = lock_authorization.SecureLock(context.sample_key_file)
 
 
 @given("the provided locking key is valid")
@@ -177,4 +187,3 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     raise NotImplementedError(u'STEP: And the key file contains the provided locking key')
-

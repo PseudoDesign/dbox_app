@@ -19,8 +19,8 @@ Feature: dbox state machine unlatch failure state
 
   Scenario Outline: running unlatch failure state
     When the state machine runs the unlatch failure state
-    And the state machine {waits} for 3 seconds
-    Then the state machine {advances} to the idle state
+    And the state machine <waits> for 3 seconds
+    Then the state machine <advances> to the idle state
 
     Examples:
     | waits         | advances          |
@@ -29,7 +29,7 @@ Feature: dbox state machine unlatch failure state
 
   Scenario Outline: other events don't interrupt unlatch failure state
     Given the state machine is in the unlatch failure state
-    When the {event_type} event is triggered
+    When the <event_type> event is triggered
     Then the state machine remains in the unlatch failure state
 
     Examples:

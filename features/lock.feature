@@ -6,7 +6,7 @@ Feature: device software lock
     Then the device is locked
 
   Scenario Outline: unlocks when key is invalid (CRC error, etc)
-    Given the sample key file {invalid_file}
+    Given the sample key file <invalid_file>
     When the state of the lock is queried
     Then the device is unlocked
 
