@@ -15,7 +15,6 @@ def step_impl(context, filename):
         context.test_lock = lock_authorization.SecureLock(context.sample_key_file)
 
 
-
 @given("the provided locking key is valid")
 def step_impl(context):
     """
@@ -142,20 +141,16 @@ def step_impl(context):
     raise NotImplementedError(u'STEP: Then the unlock device method indicates a failure')
 
 
-@then("the device is locked")
-def step_impl(context):
+@then("the device is {lock_state}")
+def step_impl(context, lock_state):
     """
     :type context: behave.runner.Context
     """
-    assert context.lock_state is True
-
-
-@then("the device is unlocked")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Then the device is unlocked')
+    if lock_state == "locked":
+        lock_state = True
+    elif lock_state == "unlocked":
+        lock_state = False
+    assert context.lock_state is lock_state
 
 
 @then("the lock device method indicates a failure")
