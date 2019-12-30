@@ -9,13 +9,15 @@ The file name is available at `context.sample_{subtype}_file`
 
 import os
 from features.utils import TempUtils
+from datetime import timedelta, datetime
 
 STEPS_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 
-def load_file(context, subtype, filename):
+def load_file(context, subtype, filename, last_modified=timedelta(days=-7)):
     """
         sets the "context.sample_{subtype}_file" attribute to "{filename}"
+        Sets the last modified timestamp of the file to last_modified
         :param filename:
         :param subtype:
         :type context: behave.runner.Context
@@ -26,3 +28,4 @@ def load_file(context, subtype, filename):
         file = os.path.join(STEPS_DIRECTORY, "samples", subtype, filename)
         tmp_file = TempUtils.copy_file_to_temp(file, target_subpath=os.path.join(context.feature.name, subtype))
         setattr(context, "sample_{}_file".format(subtype), tmp_file)
+        setattr(context, "sample_{}_file_last_modified".format(subtype), os.path.getmtime(tmp_file))

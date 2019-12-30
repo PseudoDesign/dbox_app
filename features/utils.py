@@ -1,10 +1,18 @@
 import os
 import shutil
+import string
+import random
 
 
 LOCAL_DIR = os.path.dirname(os.path.realpath(__file__))
 TEMP_DIRECTORY = os.path.join(LOCAL_DIR, "..", "..", ".tmp")
 SCRIPTS_DIR = os.path.join(LOCAL_DIR, "..", "scripts")
+
+
+def random_string(string_length=10):
+    """Generate a random string of fixed length """
+    letters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(letters) for i in range(string_length))
 
 
 class TempUtils:
@@ -31,5 +39,5 @@ class TempUtils:
         target_dir = os.path.join(TEMP_DIRECTORY, target_subpath)
         os.makedirs(target_dir, exist_ok=True)
         target_path = os.path.join(target_dir, filename)
-        shutil.copyfile(path, target_path)
+        shutil.copy2(path, target_path)
         return target_path

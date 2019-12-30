@@ -3,6 +3,8 @@ from features import utils
 import os
 from features import samples
 from dbox_app import lock_authorization
+import bcrypt
+from binascii import crc32
 
 
 @given("the sample key file {filename}")
@@ -23,7 +25,13 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: And the provided locking key is valid')
+    unlocking_key = utils.random_string(30)
+    example_hash = bcrypt.hashpw(unlocking_key.encode("utf-8"), bcrypt.gensalt())
+    context.locking_key = {
+        "hash": example_hash,
+        "crc": crc32(example_hash),
+        "unlocking_key": unlocking_key
+    }
 
 
 @given("the device key is invalid")
@@ -109,7 +117,10 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: When the the device is locked')
+    context.test_lock_locking_result = context.test_lock.lock(
+        context.locking_key['hash'],
+        context.locking_key['crc'],
+    )
 
 
 @when("the device is unlocked")
@@ -161,7 +172,7 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: Then the lock device method indicates a failure')
+    assert context.test_lock_locking_result is False
 
 
 @then("the key file is unchanged")
@@ -169,7 +180,8 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: And the key file is unchanged')
+    # Check if the last modified time matches what we started with
+    assert os.path.getmtime(context.sample_key_file) == context.sample_key_file_last_modified
 
 
 @then("the lock device method indicates a success")
