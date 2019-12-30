@@ -3,8 +3,6 @@ from features import utils
 import os
 from features import samples
 from dbox_app import lock_authorization
-import bcrypt
-from binascii import crc32
 
 
 @given("the sample key file {filename}")
@@ -25,13 +23,7 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    unlocking_key = utils.random_string(30)
-    example_hash = bcrypt.hashpw(unlocking_key.encode("utf-8"), bcrypt.gensalt())
-    context.locking_key = {
-        "hash": example_hash,
-        "crc": crc32(example_hash),
-        "unlocking_key": unlocking_key
-    }
+    context.locking_key = lock_authorization.SecureLock.generate_keyset()
 
 
 @given("the device key is invalid")
@@ -167,12 +159,16 @@ def step_impl(context, lock_state):
     assert context.lock_state is lock_state
 
 
-@then("the lock device method indicates a failure")
-def step_impl(context):
+@then("the lock device method indicates a {status}")
+def step_impl(context, status):
     """
     :type context: behave.runner.Context
     """
-    assert context.test_lock_locking_result is False
+    if status == "failure":
+        status = False
+    elif status == "success":
+        status = True
+    assert context.test_lock_locking_result is status
 
 
 @then("the key file is unchanged")
@@ -184,17 +180,13 @@ def step_impl(context):
     assert os.path.getmtime(context.sample_key_file) == context.sample_key_file_last_modified
 
 
-@then("the lock device method indicates a success")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Then the lock device method indicates a success')
-
-
 @then("the key file contains the provided locking key")
 def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: And the key file contains the provided locking key')
+    is_valid, my_hash, crc = context.test_lock.get_file_info()
+
+    assert is_valid is True
+    assert my_hash == context.locking_key["hash"]
+    assert crc == context.locking_key["crc"]

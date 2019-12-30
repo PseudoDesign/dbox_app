@@ -11,8 +11,7 @@ SCRIPTS_DIR = os.path.join(LOCAL_DIR, "..", "scripts")
 
 def random_string(string_length=10):
     """Generate a random string of fixed length """
-    letters = string.ascii_letters + string.digits + string.punctuation
-    return ''.join(random.choice(letters) for i in range(string_length))
+
 
 
 class TempUtils:

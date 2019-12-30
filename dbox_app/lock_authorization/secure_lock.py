@@ -1,6 +1,6 @@
 import yaml
 from binascii import crc32
-from bcrypt import checkpw
+import bcrypt
 import os
 
 
@@ -8,6 +8,29 @@ class SecureLock:
     """
     Manages a secure key lock, where the lock is stored on the filesystem.
     """
+
+    @staticmethod
+    def generate_keyset(string_length: int = 30) -> {}:
+        """
+        Returns a dict with a valid keyset
+        {
+            hash: ,
+            crc: ,
+            unlocking_key: ,
+        }
+        :return:
+        """
+        import string
+        import random
+
+        letters = string.ascii_letters + string.digits + string.punctuation
+        unlocking_key = ''.join(random.choice(letters) for i in range(string_length))
+        example_hash = bcrypt.hashpw(unlocking_key.encode("utf-8"), bcrypt.gensalt())
+        return {
+            "hash": example_hash,
+            "crc": crc32(example_hash),
+            "unlocking_key": unlocking_key
+        }
 
     def __init__(self, lock_path: str):
         """
@@ -36,7 +59,7 @@ class SecureLock:
         :param new_crc:
         :return: True if the device is locked with the provided info, else false
         """
-        is_locked, old_hash, old_crc = self._get_file_info()
+        is_locked, old_hash, old_crc = self.get_file_info()
         if is_locked:
             if old_hash == new_hash and old_crc == new_crc:
                 return True
@@ -55,9 +78,9 @@ class SecureLock:
         :param unlocking_key:
         :return: True if the device is unlocked, else false
         """
-        is_valid, my_hash, crc = self._get_file_info()
+        is_valid, my_hash, crc = self.get_file_info()
         if is_valid:
-            if checkpw(unlocking_key.encode("utf-8"), my_hash):
+            if bcrypt.checkpw(unlocking_key.encode("utf-8"), my_hash):
                 try:
                     self._remove_lock_file()
                 except IOError:
@@ -72,10 +95,10 @@ class SecureLock:
         Returns if the lock file at self.__lock_path exists and is valid, else false
         :return:
         """
-        is_valid, my_hash, crc = self._get_file_info()
+        is_valid, my_hash, crc = self.get_file_info()
         return is_valid
 
-    def _get_file_info(self) -> (bool, b'', int):
+    def get_file_info(self) -> (bool, b'', int):
         """
         Returns information about the lock file
         :return: is_valid, hash, crc

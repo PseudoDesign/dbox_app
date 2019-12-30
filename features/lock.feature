@@ -25,23 +25,24 @@ Feature: device software lock
     And the key file is unchanged
 
   Scenario: locking saves valid key to key file when device is unlocked
-    Given the device is unlocked
+    Given the sample key file invalid_yaml.yaml
     And the provided locking key is valid
     When the device is locked
     Then the lock device method indicates a success
     And the key file contains the provided locking key
 
-  Scenario Outline: lock enable fails when key file cannot be validated
-    Given device is unlocked
-    And the provided locking key is valid
-    And writing the key file fails due to <reason>
-    When the device is locked
-    Then the lock device method indicates a failure
-
-  Examples:
-    | reason              |
-    | Write I/O Error     |
-    | Invalid Readback    |
+# Excluded, but handled in unittests
+#  Scenario Outline: lock enable fails when key file cannot be validated
+#    Given the sample key file is /dev/zero
+#    And the provided locking key is valid
+#    And writing the key file fails due to <reason>
+#    When the device is locked
+#    Then the lock device method indicates a failure
+#
+#  Examples:
+#    | reason              |
+#    | Write I/O Error     |
+#    | Invalid Readback    |
 
   Scenario: unlocking with valid key when locked
     Given the device is locked
