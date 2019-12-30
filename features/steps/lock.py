@@ -10,7 +10,10 @@ def step_impl(context, filename):
     """
     :type context: behave.runner.Context
     """
-    samples.load_file(context, "key", filename)
+    if filename == "does not exist":
+        context.sample_key_file = os.path.join(utils.TEMP_DIRECTORY, "key", "sample_key_file.yaml")
+    else:
+        samples.load_file(context, "key", filename)
     if not hasattr(context, "test_lock"):
         context.test_lock = lock_authorization.SecureLock(context.sample_key_file)
 
