@@ -80,13 +80,12 @@ class SecureLock:
         """
         is_valid, my_hash, crc = self.get_file_info()
         if is_valid:
-            if bcrypt.checkpw(unlocking_key.encode("utf-8"), my_hash):
-                try:
-                    self._remove_lock_file()
-                except IOError:
-                    return False
-            else:
+            if not bcrypt.checkpw(unlocking_key.encode("utf-8"), my_hash):
                 return False
+        try:
+            self._remove_lock_file()
+        except IOError:
+            return False
         return True
 
     @property

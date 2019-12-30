@@ -52,9 +52,11 @@ Feature: device software lock
     And the unlock device method indicates a success
 
   Scenario: unlocking when key file is invalid
-    Given the device key is invalid
+    Given the sample key file invalid_yaml.yaml
+    And the sample unlocking key valid-0
     When the device is unlocked
     Then the unlock device method indicates a success
+    And the key file is removed
 
   Scenario: unlocking when the key file cannot be removed
     Given the device is locked
