@@ -58,17 +58,17 @@ Feature: device software lock
     Then the unlock device method indicates a success
     And the key file is removed
 
-  Scenario: unlocking when the key file cannot be removed
-    Given the device is locked
-    And the provided unlocking key is valid
-    And erasing the key file fails
-    When the device is unlocked
-    Then the unlock device method indicates a failure
+# This is handled in unit tests
+#  Scenario: unlocking when the key file cannot be removed
+#    Given the sample key file valid-0.yaml
+#    And the sample unlocking key valid-0
+#    And erasing the key file fails
+#    When the device is unlocked
+#    Then the unlock device method indicates a failure
 
   Scenario: unlocking with invalid key when locked
-    Given the device is locked
-    And the sample key file valid-0.yaml
-    And the provided unlocking key is invalid
+    Given the sample key file valid-0.yaml
+    And the sample unlocking key invalid
     When the device is unlocked
     Then the unlock device method indicates a failure
     And the key file is unchanged
