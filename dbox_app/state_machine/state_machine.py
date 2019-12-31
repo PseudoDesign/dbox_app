@@ -18,12 +18,16 @@ class StateMachine(object):
             'timeout': 3,
             'on_timeout': 'advance',
             'ignore_invalid_triggers': True,
+            'on_enter': 'enter_unlatch_failure_state',
+            'on_exit': 'exit_unlatch_failure_state',
         },
         {
             'name': 'unlatch',
             'timeout': 3,
             'on_timeout': 'advance',
             'ignore_invalid_triggers': True,
+            'on_enter': 'enter_unlatch_state',
+            'on_exit': 'exit_unlatch_state'
         },
     ]
 
@@ -48,8 +52,6 @@ class StateMachine(object):
             "idle",
             "unlatch"
         )
-        self.machine.on_enter_unlatch_failure('enter_unlatch_failure_state')
-        self.machine.on_exit_unlatch_failure('exit_unlatch_failure_state')
         self.__button.on_press_and_release = self.trigger_button_press
         # Transitions back to idle
         self.machine.add_transition(
@@ -74,6 +76,18 @@ class StateMachine(object):
         self.__led.enable()
 
     def exit_unlatch_failure_state(self):
+        self.__led.disable()
+
+    def enter_unlatch_state(self):
+        self.__led.disable()
+        self.__led.set_color(Color.PINK)
+        self.__led.set_fade(True)
+        self.__led.set_blink_frequency(2)
+        self.__led.enable()
+        self.__latch.actuate()
+
+    def exit_unlatch_state(self):
+        self.__latch.release()
         self.__led.disable()
 
 

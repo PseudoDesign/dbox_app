@@ -9,6 +9,10 @@ def step_impl(context, color):
     """
     if color == "red":
         color = rgb_led.Color.RED
+    elif color == "pink":
+        color = rgb_led.Color.PINK
+    else:
+        raise NotImplementedError(f"Unsupported color {color}")
     context.test_led.set_color.assert_called_once_with(color)
 
 
