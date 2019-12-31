@@ -23,10 +23,7 @@ def step_impl(context, machine_state):
             context.test_lock,
             context.test_bluetooth
         )
-    if machine_state == "idle":
-        pass
-    else:
-        raise NotImplementedError(f'STEP: And the state machine is in the {machine_state} state')
+    context.test_state_machine.machine.set_state(machine_state)
 
 
 @when("the button press and release event is triggered")
@@ -34,15 +31,15 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: When the button press and release event is triggered')
+    context.test_button.on_press_and_release()
 
 
-@then("the state machine advances to the unlatch failure state")
-def step_impl(context):
+@then("the state machine is in the {target_state} state")
+def step_impl(context, target_state):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: Then the state machine advances to the unlatch failure state')
+    assert context.test_state_machine.state == target_state
 
 
 @when("the state machine enters the unlatch failure state")
