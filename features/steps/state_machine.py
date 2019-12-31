@@ -18,11 +18,14 @@ def step_impl(context, machine_state):
             context.test_lock = MagicMock()
         if not hasattr(context, "test_bluetooth"):
             context.test_bluetooth = MagicMock()
+        if not hasattr(context, "test_latch"):
+            context.test_latch = MagicMock()
         context.test_state_machine = state_machine.StateMachine(
             context.test_button,
             context.test_led,
             context.test_lock,
-            context.test_bluetooth
+            context.test_bluetooth,
+            context.test_latch
         )
     context.test_state_machine.machine.set_state(machine_state)
 

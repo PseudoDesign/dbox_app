@@ -27,11 +27,12 @@ class StateMachine(object):
         },
     ]
 
-    def __init__(self, button, led, secure_lock, bluetooth):
+    def __init__(self, button, led, secure_lock, bluetooth, latch):
         self.__button = button
         self.__led = led
         self.__secure_lock = secure_lock
         self.__bluetooth = bluetooth
+        self.__latch = latch
 
         self.machine = TimeoutStateMachine(model=self, states=self.states, initial='entry')
 
