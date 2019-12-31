@@ -1,7 +1,7 @@
 Feature: dbox state machine unlatch failure state
 
   Scenario: press and release when device is locked enters unlatch failure state
-    Given the device is locked
+    Given the sample key file valid-0.yaml
     And the state machine is in the idle state
     When the button press and release event is triggered
     Then the state machine advances to the unlatch failure state
