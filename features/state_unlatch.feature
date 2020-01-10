@@ -6,15 +6,21 @@ Feature: dbox state machine unlatch state
     When the button_press_and_release event is triggered
     Then the state machine is in the unlatch state
 
-  Scenario: entering unlatch state
+  Scenario Outline: entering unlatch state
     Given the sample key file does not exist
     And the state machine is in the idle state
+    And the latch actuation <is_successful> successful
     When the button_press_and_release event is triggered
-    Then the LED color is set to pink
+    Then the LED color is set to <led_color>
     And the LED blink frequency is set to 2
     And the LED fade is enabled
     And the LED is enabled
-    And the latch is actuated
+    And the latch is <latch_call>
+
+    Examples:
+    | is_successful | led_color | latch_call  |
+    | is            | green     | actuated    |
+    | is not        | pink      | actuated    |
 
   Scenario: exiting unlatch state
     Given the state machine is in the unlatch state

@@ -80,11 +80,13 @@ class StateMachine(object):
 
     def enter_unlatch_state(self):
         self.__led.disable()
-        self.__led.set_color(Color.PINK)
+        if self.__latch.actuate():
+            self.__led.set_color(Color.GREEN)
+        else:
+            self.__led.set_color(Color.PINK)
         self.__led.set_fade(True)
         self.__led.set_blink_frequency(2)
         self.__led.enable()
-        self.__latch.actuate()
 
     def exit_unlatch_state(self):
         self.__latch.release()
