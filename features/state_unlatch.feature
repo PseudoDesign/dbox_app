@@ -32,7 +32,7 @@ Feature: dbox state machine unlatch state
     Given the sample key file does not exist
     And the state machine is in the idle state
     When the button_press_and_release event is triggered
-    And the state machine waits for <sec> seconds
+    And the system waits for <sec> seconds
     Then the state machine is in the <expected_state> state
 
     Examples:

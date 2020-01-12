@@ -61,7 +61,7 @@ def step_impl(context, transition):
     getattr(context.test_state_machine, transition)()
 
 
-@step("the state machine waits for {num_seconds} seconds")
+@step("the system waits for {num_seconds} seconds")
 def step_impl(context, num_seconds):
     """
     :type context: behave.runner.Context
