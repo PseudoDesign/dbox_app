@@ -1,0 +1,3 @@
+class Latch:
+    pass
+
