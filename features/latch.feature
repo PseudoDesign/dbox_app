@@ -12,7 +12,7 @@ Feature: Latch control
     Given a latched and released latch object
     When the system waits for <time_seconds> seconds
     And the unlatch method is called
-    Then the latch phy is no actuated
+    Then the latch phy is not actuated
     And the unlatch method returns false
 
     Examples:
@@ -38,7 +38,7 @@ Feature: Latch control
 
     Given a latched and released latch object
     When the system waits for <time_seconds> seconds
-    And and the unlatch is called
+    And and the unlatch method is called
     Then the latch phy is actuated
     And the unlatch method returns true
 

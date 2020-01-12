@@ -16,6 +16,7 @@ def step_impl(context, latch_state):
         context.latch_object = Latch(context.latch_gpio)
         context.latch_object.unlatch()
         context.latch_object.release()
+        context.latch_gpio.reset_mock()
     else:
         raise NotImplementedError()
 
@@ -33,7 +34,7 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: Then the latch phy is actuated')
+    context.latch_gpio.on.assert_called_once()
 
 
 @then("the unlatch method returns {bool_result}")
@@ -48,42 +49,34 @@ def step_impl(context, bool_result):
     assert bool_result == context.unlatch_result
 
 
-@given("a latched and released latch object")
-def step_impl(context):
+@then("the latch phy {is_actuated} actuated")
+def step_impl(context, is_actuated):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: Given a latched and released latch object')
+    if is_actuated == "is":
+        is_actuated = True
+    elif is_actuated == "is not":
+        is_actuated = False
+    assert is_actuated == context.latch_gpio.on.called
 
 
-@then("the latch phy is no actuated")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: Then the latch phy is no actuated')
-
-
-@step("the unlatch method returns false")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-    raise NotImplementedError(u'STEP: And the unlatch method returns false')
-
-
-@then("the latch phy (?P<is_released>.+) released")
+@then("the latch phy {is_released} released")
 def step_impl(context, is_released):
     """
     :type context: behave.runner.Context
     :type is_released: str
     """
-    raise NotImplementedError(u'STEP: Then the latch phy <is_released> released')
+    if is_released == "is":
+        is_released = True
+    elif is_released == "is not":
+        is_released = False
+    assert is_released == context.latch_gpio.off.called
 
 
-@step("and the unlatch is called")
+@when("and the unlatch method is called")
 def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    raise NotImplementedError(u'STEP: And and the unlatch is called')
+    context.latch.unlatch()
