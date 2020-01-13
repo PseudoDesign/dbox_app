@@ -8,6 +8,7 @@ Don't do it
 """
 from datetime import datetime, timedelta
 from threading import Thread, Lock
+from time import sleep
 
 
 class Latch:
@@ -24,6 +25,20 @@ class Latch:
         self.__hold_off_time = timedelta(seconds=hold_off_seconds)
         self.__last_disabled = last_disabled
         self.__phy_lock = Lock()
+        self.__background_thread = None
+        self.__stop_thread = False
+
+    def _unlatch_after_max_hold_time(self):
+        start_time = datetime.now()
+        while 1:
+            if (datetime.now() - start_time) >= self.__max_on_time:
+                with self.__phy_lock:
+                    self.__gpio.off()
+                break
+            with self.__phy_lock:
+                if self.__stop_thread:
+                    break
+            sleep(.1)
 
     def unlatch(self):
         """
@@ -34,14 +49,23 @@ class Latch:
             if (datetime.now() - self.__last_disabled) < self.__hold_off_time:
                 return False
             else:
+                if self.__background_thread is None:
+                    self.__background_thread = Thread(target=self._unlatch_after_max_hold_time)
+                    self.__stop_thread = False
+                    self.__background_thread.start()
                 self.__gpio.on()
                 return True
 
     def release(self):
         """
-        Release the latch
+        Release the latch and stop the background thread
         :return:
         """
         with self.__phy_lock:
             self.__gpio.off()
             self.__last_disabled = datetime.now()
+            if self.__background_thread is not None:
+                self.__stop_thread = True
+        if self.__background_thread is not None:
+            self.__background_thread.join()
+            self.__stop_thread = False

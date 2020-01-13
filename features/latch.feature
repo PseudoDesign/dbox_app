@@ -29,7 +29,7 @@ Feature: Latch control
     | 9.0            |
 
   Scenario Outline: latch releases after timeout
-    Given a new latch object
+    Given a stale latch object
     When the unlatch method is called
     And the system waits for <time_seconds> seconds
     Then the latch phy <is_released> released
@@ -44,7 +44,7 @@ Feature: Latch control
 
     Given a latched and released latch object
     When the system waits for 10.25 seconds
-    And and the unlatch method is called
+    And the unlatch method is called
     Then the latch phy is actuated
     And the unlatch method returns true
 
