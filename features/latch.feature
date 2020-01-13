@@ -39,6 +39,21 @@ Feature: Latch control
     | 2.75         | is not       |
     | 3.25         | is           |
 
+  Scenario Outline: multiple calls to unlatch don't reset timeout
+    Given a stale latch object
+    When the unlatch method is called
+    And the system waits for <first_wait> seconds
+    And the unlatch method is called
+    And the system waits for <second_wait> seconds
+    Then the latch phy <is_released> released
+
+    Examples:
+    | first_wait | second_wait | is_released |
+    | 1          | 1.75        | is not      |
+    | 1          | 2.25        | is          |
+    | 2.5        | .25         | is not      |
+    | 2.75       | .5          | is          |
+
 
   Scenario: unlatch is successful after keep-out time
 
