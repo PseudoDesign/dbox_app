@@ -22,11 +22,11 @@ Feature: Latch control
     And the unlatch method returns false
 
     Examples:
-    | time_seconds |
-    | 0            |
-    | 1            |
-    | 5            |
-    | 9            |
+    | time_seconds   |
+    | 0.0            |
+    | 1.0            |
+    | 5.0            |
+    | 9.0            |
 
   Scenario Outline: latch releases after timeout
     Given a new latch object
@@ -43,7 +43,7 @@ Feature: Latch control
   Scenario: unlatch is successful after keep-out time
 
     Given a latched and released latch object
-    When the system waits for <time_seconds> seconds
+    When the system waits for 10.25 seconds
     And and the unlatch method is called
     Then the latch phy is actuated
     And the unlatch method returns true

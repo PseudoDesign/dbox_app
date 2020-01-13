@@ -85,4 +85,4 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    context.latch.unlatch()
+    context.latch_object.unlatch()
