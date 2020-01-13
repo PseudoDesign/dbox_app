@@ -1,6 +1,7 @@
 from behave import *
 from dbox_app.phy import Latch
 from unittest.mock import MagicMock
+from datetime import datetime, timedelta
 
 
 @given("a {latch_state} latch object")
@@ -17,6 +18,11 @@ def step_impl(context, latch_state):
         context.latch_object.unlatch()
         context.latch_object.release()
         context.latch_gpio.reset_mock()
+    elif latch_state == "stale":
+        context.latch_gpio = MagicMock()
+        context.latch_object = Latch(
+            context.latch_gpio,
+            last_disabled=(datetime.now() - timedelta(minutes=60)))
     else:
         raise NotImplementedError()
 

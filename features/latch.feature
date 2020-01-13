@@ -1,11 +1,17 @@
 Feature: Latch control
 
-  Scenario: unlatch is successful out of reset
-
-    Given a new latch object
+  Scenario: idle object succeeds when unlatched
+    Given a stale latch object
     When the unlatch method is called
     Then the latch phy is actuated
     And the unlatch method returns true
+
+  Scenario: fails when immediately unlatched
+
+    Given a new latch object
+    When the unlatch method is called
+    Then the latch phy is not actuated
+    And the unlatch method returns false
 
   Scenario Outline: unlatch fails when in keep-out time
 
