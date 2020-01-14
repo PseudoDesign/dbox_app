@@ -1,13 +1,23 @@
 Feature: button phy
 
-  Scenario:
+  Scenario: press and release
     Given the button is not pressed
-    When the button is pressed and released
+    When the pin is driven high
+    And the system waits for .25 seconds
+    And the pin is driven low
     Then the on_press_and_release method is called
 
-  Scenario:
+  Scenario: press, hold, and release
     Given the button is not pressed
-    When the button is held for 3 seconds and released
+    When the pin is driven high
+    And the system waits for 3.25 seconds
+    And the pin is driven low
     Then the on_hold method is called
     And the on_press_and_release method is not called
 
+  Scenario: press and hold
+    Given the button is not pressed
+    When the pin is driven high
+    And the system waits for 3.25 seconds
+    Then the on_hold method is called
+    And the on_press_and_release method is not called

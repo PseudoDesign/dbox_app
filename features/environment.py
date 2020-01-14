@@ -7,3 +7,5 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     TempUtils.tear_down()
+    if hasattr(context, "test_button"):
+        context.test_button.close()
