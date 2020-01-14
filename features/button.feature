@@ -1,4 +1,4 @@
-Feature: button handler
+Feature: button phy
 
   Scenario:
     Given the button is not pressed

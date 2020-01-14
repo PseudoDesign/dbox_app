@@ -32,6 +32,14 @@ class StateMachine(object):
     ]
 
     def __init__(self, button, led, secure_lock, bluetooth, latch):
+        """
+        Main state machine for the application.  Implements the "transitions" library
+        :param button:
+        :param led:
+        :param secure_lock:
+        :param bluetooth:
+        :param latch:
+        """
         self.__button = button
         self.__led = led
         self.__secure_lock = secure_lock
@@ -66,9 +74,17 @@ class StateMachine(object):
         )
 
     def is_device_locked(self):
+        """
+        Returns true if the device is locked, else false
+        :return:
+        """
         return self.__secure_lock.is_locked
 
     def enter_unlatch_failure_state(self):
+        """
+        Tasks to run when entering the unlatch failure state
+        :return:
+        """
         self.__led.disable()
         self.__led.set_color(Color.RED)
         self.__led.set_fade(False)
@@ -76,6 +92,10 @@ class StateMachine(object):
         self.__led.enable()
 
     def exit_unlatch_failure_state(self):
+        """
+        Tasks to run when exiting the unlatch failure state
+        :return:
+        """
         self.__led.disable()
 
     def enter_unlatch_state(self):
