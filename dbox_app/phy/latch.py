@@ -9,18 +9,23 @@ Don't do it
 from datetime import datetime, timedelta
 from threading import Thread, Lock
 from time import sleep
+from gpiozero import DigitalOutputDevice
 
 
 class Latch:
-    def __init__(self, gpio_object, max_on_seconds=3, hold_off_seconds=10, last_disabled=datetime.now()):
+    def __init__(self,
+                 pin: DigitalOutputDevice,
+                 max_on_seconds: float = 3,
+                 hold_off_seconds: float = 10,
+                 last_disabled: datetime = datetime.now()):
         """
         Creates a latch object with the provided parameters
-        :param gpio_object: requires "on" and "off" methods
+        :param pin: requires "on" and "off" methods
         :param max_on_seconds:
         :param hold_off_seconds:
         :param last_disabled: a datetime object for when this object was last disabled, else now.
         """
-        self.__gpio = gpio_object
+        self.__gpio = DigitalOutputDevice(pin)
         self.__max_on_time = timedelta(seconds=max_on_seconds)
         self.__hold_off_time = timedelta(seconds=hold_off_seconds)
         self.__last_disabled = last_disabled
@@ -69,3 +74,13 @@ class Latch:
         if self.__background_thread is not None:
             self.__background_thread.join()
             self.__stop_thread = False
+
+    def close(self):
+        with self.__phy_lock:
+            self.__gpio.off()
+            self.__last_disabled = datetime.now()
+            if self.__background_thread is not None:
+                self.__stop_thread = True
+        if self.__background_thread is not None:
+            self.__background_thread.join()
+        self.__gpio.close()
