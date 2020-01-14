@@ -1,5 +1,4 @@
 from features.utils import TempUtils
-from time import sleep
 
 
 def before_scenario(context, scenario):

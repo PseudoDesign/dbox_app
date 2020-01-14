@@ -14,13 +14,13 @@ from gpiozero import DigitalOutputDevice
 
 class Latch:
     def __init__(self,
-                 pin: DigitalOutputDevice,
+                 pin: int,
                  max_on_seconds: float = 3,
                  hold_off_seconds: float = 10,
                  last_disabled: datetime = datetime.now()):
         """
         Creates a latch object with the provided parameters
-        :param pin: requires "on" and "off" methods
+        :param pin: pin number
         :param max_on_seconds:
         :param hold_off_seconds:
         :param last_disabled: a datetime object for when this object was last disabled, else now.
