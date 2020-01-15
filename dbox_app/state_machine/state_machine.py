@@ -1,5 +1,5 @@
 from transitions import Machine
-from dbox_app.rgb_led import Color
+from dbox_app.phy.rgb_led import Color
 from transitions.extensions.states import add_state_features, Timeout
 
 
@@ -87,8 +87,7 @@ class StateMachine(object):
         """
         self.__led.disable()
         self.__led.set_color(Color.RED)
-        self.__led.set_fade(False)
-        self.__led.set_blink_frequency(4)
+        self.__led.blink(4)
         self.__led.enable()
 
     def exit_unlatch_failure_state(self):
@@ -104,9 +103,7 @@ class StateMachine(object):
             self.__led.set_color(Color.GREEN)
         else:
             self.__led.set_color(Color.PINK)
-        self.__led.set_fade(True)
-        self.__led.set_blink_frequency(2)
-        self.__led.enable()
+        self.__led.blink(2, fade=True)
 
     def exit_unlatch_state(self):
         self.__latch.release()

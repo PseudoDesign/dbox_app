@@ -11,9 +11,7 @@ Feature: dbox state machine unlatch failure state
     And the state machine is in the idle state
     When the button_press_and_release event is triggered
     Then the LED color is set to red
-    And the LED blink frequency is set to 4
-    And the LED fade is disabled
-    And the LED is enabled
+    And the LED blink is set to 4 Hz
 
   Scenario: exiting unlatch failure state
     Given the state machine is in the unlatch_failure state
