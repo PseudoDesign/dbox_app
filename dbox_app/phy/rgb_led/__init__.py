@@ -1,5 +1,2 @@
 from .color import Color
-
-
-class RgbLed:
-    pass
+from .rgb_led import RgbLed

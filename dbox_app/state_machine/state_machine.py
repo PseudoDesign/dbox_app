@@ -1,4 +1,4 @@
-from transitions import Machine
+from transitions.extensions import LockedMachine as Machine
 from dbox_app.phy.rgb_led import Color
 from transitions.extensions.states import add_state_features, Timeout
 
@@ -46,7 +46,7 @@ class StateMachine(object):
         self.__bluetooth = bluetooth
         self.__latch = latch
 
-        self.machine = TimeoutStateMachine(model=self, states=self.states, initial='entry')
+        self.machine = TimeoutStateMachine(model=self, states=self.states, initial='idle')
 
         # Set up button press handler
         self.machine.add_transition(
