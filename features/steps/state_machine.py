@@ -69,3 +69,11 @@ def step_impl(context, num_seconds):
     """
     num_seconds = float(num_seconds)
     sleep(num_seconds)
+
+
+@when("the state machine exit method is called")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    context.test_state_machine.exit()

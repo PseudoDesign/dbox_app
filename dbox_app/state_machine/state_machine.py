@@ -18,17 +18,21 @@ class StateMachine(object):
             'timeout': 3,
             'on_timeout': 'advance',
             'ignore_invalid_triggers': True,
-            'on_enter': 'enter_unlatch_failure_state',
-            'on_exit': 'exit_unlatch_failure_state',
+            'on_enter': '_enter_unlatch_failure_state',
+            'on_exit': '_exit_unlatch_failure_state',
         },
         {
             'name': 'unlatch',
             'timeout': 3,
             'on_timeout': 'advance',
             'ignore_invalid_triggers': True,
-            'on_enter': 'enter_unlatch_state',
-            'on_exit': 'exit_unlatch_state'
+            'on_enter': '_enter_unlatch_state',
+            'on_exit': '_exit_unlatch_state'
         },
+        {
+            'name': 'exiting',
+            'ignore_invalid_triggers': True,
+        }
     ]
 
     def __init__(self, button, led, secure_lock, bluetooth, latch):
@@ -53,7 +57,7 @@ class StateMachine(object):
             "trigger_button_press",
             "idle",
             "unlatch_failure",
-            conditions=['is_device_locked'],
+            conditions=['_is_device_locked'],
         )
         self.machine.add_transition(
             "trigger_button_press",
@@ -61,7 +65,7 @@ class StateMachine(object):
             "unlatch"
         )
         self.__button.on_press_and_release = self.trigger_button_press
-        # Transitions back to idle
+        # Transitions back to idle from button press handlers
         self.machine.add_transition(
             "advance",
             "unlatch_failure",
@@ -73,14 +77,39 @@ class StateMachine(object):
             "idle",
         )
 
-    def is_device_locked(self):
+        # Set up the exit transitions
+        self.machine.add_transition(
+            "_on_exit",
+            "idle",
+            "exiting"
+        )
+        self.machine.add_transition(
+            "_on_exit",
+            "unlatch_failure",
+            "exiting"
+        )
+        self.machine.add_transition(
+            "_on_exit",
+            "unlatch",
+            "exiting"
+        )
+
+    def exit(self):
+        """
+        Begin the state machine exit procedure
+        :return:
+        """
+        self._on_exit()
+
+    def _is_device_locked(self):
         """
         Returns true if the device is locked, else false
         :return:
         """
         return self.__secure_lock.is_locked
 
-    def enter_unlatch_failure_state(self):
+
+    def _enter_unlatch_failure_state(self):
         """
         Tasks to run when entering the unlatch failure state
         :return:
@@ -90,14 +119,14 @@ class StateMachine(object):
         self.__led.blink(4)
         self.__led.enable()
 
-    def exit_unlatch_failure_state(self):
+    def _exit_unlatch_failure_state(self):
         """
         Tasks to run when exiting the unlatch failure state
         :return:
         """
         self.__led.disable()
 
-    def enter_unlatch_state(self):
+    def _enter_unlatch_state(self):
         self.__led.disable()
         if self.__latch.actuate():
             self.__led.set_color(Color.GREEN)
@@ -105,7 +134,7 @@ class StateMachine(object):
             self.__led.set_color(Color.PINK)
         self.__led.blink(2, fade=True)
 
-    def exit_unlatch_state(self):
+    def _exit_unlatch_state(self):
         self.__latch.release()
         self.__led.disable()
 
