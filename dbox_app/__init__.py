@@ -25,7 +25,7 @@ class SignalHandler:
 
 
 def main():
-    sysd_notifier = sdnotify.SystemdNotifier()
+    sd_notify = sdnotify.SystemdNotifier()
     signal_handler = SignalHandler()
     parser = argparse.ArgumentParser(description="Launcher for the dbox app")
     parser.add_argument('config_file', type=str, default="/etc/dbox/conf", help="Location of the donfi")
@@ -55,13 +55,13 @@ def main():
     machine = StateMachine(button, led, lock, None, latch)
 
     machine.start()
-    sysd_notifier.notify("READY=1")
+    sd_notify.notify("READY=1")
 
     while not signal_handler.exit:
-        sysd_notifier.notify("WATCHDOG=1")
+        sd_notify.notify("WATCHDOG=1")
         sleep(1)
 
-    sysd_notifier.notify("STOPPING=1")
+    sd_notify.notify("STOPPING=1")
 
     button.close()
     latch.close()
