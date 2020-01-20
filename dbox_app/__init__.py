@@ -3,9 +3,30 @@ from .lock_authorization import SecureLock
 from .phy import Button, Latch, RgbLed
 import argparse
 import yaml
+import signal
+import sdnotify
+from time import sleep
+
+
+class SignalHandler:
+    exit = True
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.set_exit_flag)
+        signal.signal(signal.SIGTERM, self.set_exit_flag)
+
+    @classmethod
+    def set_exit_flag(cls):
+        """
+        set the exit flag to TRUE
+        :return:
+        """
+        cls.exit = True
 
 
 def main():
+    sysd_notifier = sdnotify.SystemdNotifier()
+    signal_handler = SignalHandler()
     parser = argparse.ArgumentParser(description="Launcher for the dbox app")
     parser.add_argument('config_file', type=str, default="/etc/dbox/conf", help="Location of the donfi")
 
@@ -32,3 +53,16 @@ def main():
     lock = SecureLock(secure_lock_file)
 
     machine = StateMachine(button, led, lock, None, latch)
+
+    machine.start()
+    sysd_notifier.notify("READY=1")
+
+    while not signal_handler.exit:
+        sysd_notifier.notify("WATCHDOG=1")
+        sleep(1)
+
+    sysd_notifier.notify("STOPPING=1")
+
+    button.close()
+    latch.close()
+    led.close()

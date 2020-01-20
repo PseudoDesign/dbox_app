@@ -20,3 +20,6 @@ class RgbLed:
             self.__led.pulse(fade_in_time=on_time, fade_out_time=on_time, on_color=self.__color)
         else:
             self.__led.blink(on_time=on_time, off_time=on_time, on_color=self.__color)
+
+    def close(self):
+        self.__led.close()
