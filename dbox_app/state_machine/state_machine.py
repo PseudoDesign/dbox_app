@@ -11,8 +11,14 @@ class TimeoutStateMachine(Machine):
 class StateMachine(object):
 
     states = [
-        'entry',
-        'idle',
+        {
+            'name': 'startup',
+            'ignore_invalid_triggers': True,
+        },
+        {
+            'name': 'idle',
+            'ignore_invalid_triggers': True,
+        },
         {
             'name': 'unlatch_failure',
             'timeout': 3,
@@ -52,19 +58,27 @@ class StateMachine(object):
 
         self.machine = TimeoutStateMachine(model=self, states=self.states, initial='idle')
 
+        # Set up the startup state transition
+        self.machine.add_transition(
+            "_on_start",
+            "startup",
+            "idle",
+        )
+
         # Set up button press handler
         self.machine.add_transition(
-            "trigger_button_press",
+            "_trigger_button_press",
             "idle",
             "unlatch_failure",
             conditions=['_is_device_locked'],
         )
         self.machine.add_transition(
-            "trigger_button_press",
+            "_trigger_button_press",
             "idle",
             "unlatch"
         )
-        self.__button.on_press_and_release = self.trigger_button_press
+        self.__button.on_press_and_release = self._trigger_button_press
+
         # Transitions back to idle from button press handlers
         self.machine.add_transition(
             "advance",
@@ -93,6 +107,13 @@ class StateMachine(object):
             "unlatch",
             "exiting"
         )
+
+    def start(self):
+        """
+        Move the state machine from the startup to idle state
+        :return:
+        """
+        self._on_start()
 
     def exit(self):
         """

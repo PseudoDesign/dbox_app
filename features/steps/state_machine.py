@@ -77,3 +77,11 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     context.test_state_machine.exit()
+
+
+@when("the state machine start method is called")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    context.test_state_machine.start()
