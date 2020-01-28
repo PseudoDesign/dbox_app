@@ -103,7 +103,10 @@ class SecureLock:
         :return: is_valid, hash, crc
         """
         try:
-            my_hash, crc = self._load_lock_file()
+            try:
+                my_hash, crc = self._load_lock_file()
+            except TypeError:
+                my_hash, crc = None, None
             # If the CRC is valid...
             if self._check_crc(my_hash, crc):
                 return True, my_hash, crc
