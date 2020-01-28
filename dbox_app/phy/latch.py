@@ -67,15 +67,20 @@ class Latch:
         :return:
         """
         with self.__phy_lock:
-            self.__gpio.off()
-            self.__last_disabled = datetime.now()
-            if self.__background_thread is not None:
-                self.__stop_thread = True
+            if self.__gpio.is_active:
+                self.__gpio.off()
+                self.__last_disabled = datetime.now()
+                if self.__background_thread is not None:
+                    self.__stop_thread = True
         if self.__background_thread is not None:
             self.__background_thread.join()
             self.__stop_thread = False
 
     def close(self):
+        """
+        tear down this object
+        :return:
+        """
         with self.__phy_lock:
             self.__gpio.off()
             self.__last_disabled = datetime.now()

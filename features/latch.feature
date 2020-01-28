@@ -19,8 +19,10 @@ Feature: Latch control
 
   Scenario Outline: unlatch fails when in keep-out time
 
-    Given a latched and released latch object
-    When the system waits for <time_seconds> seconds
+    Given a stale latch object
+    When the test latch unlatch method is called
+    And the test latch release method is called
+    And the system waits for <time_seconds> seconds
     And the test latch unlatch method is called
     Then the latch pin is driven low
     And the unlatch method returns false
@@ -63,14 +65,13 @@ Feature: Latch control
     When the system waits for <first_wait> seconds
     And the test latch release method is called
     And the system waits for <second_wait> seconds
+    And the test latch unlatch method is called
     Then the latch pin is driven <value>
 
     Examples:
     | first_wait | second_wait | value        |
-    | 1          | 1.75        | high         |
-    | 1          | 2.25        | low          |
-    | 2.5        | .25         | high         |
-    | 2.75       | .5          | low          |
+    | 2.5        | .25         | low          |
+    | 7          | 4           | high         |
 
   Scenario: unlatch is successful after keep-out time
 
