@@ -17,8 +17,8 @@ Feature: dbox state machine unlatch state
 
     Examples:
     | is_successful | led_color | latch_call  |
-    | is            | green     | actuated    |
-    | is not        | pink      | actuated    |
+    | is            | green     | unlatched    |
+    | is not        | pink      | unlatched    |
 
   Scenario: exiting unlatch state
     Given the state machine is in the unlatch state
