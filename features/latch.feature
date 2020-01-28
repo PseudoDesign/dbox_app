@@ -58,6 +58,19 @@ Feature: Latch control
     | 2.5        | .25         | high         |
     | 2.75       | .5          | low          |
 
+  Scenario Outline: multiple calls to release don't reset timeout
+    Given a latched and released latch object
+    When the system waits for <first_wait> seconds
+    And the test latch release method is called
+    And the system waits for <second_wait> seconds
+    Then the latch pin is driven <value>
+
+    Examples:
+    | first_wait | second_wait | value        |
+    | 1          | 1.75        | high         |
+    | 1          | 2.25        | low          |
+    | 2.5        | .25         | high         |
+    | 2.75       | .5          | low          |
 
   Scenario: unlatch is successful after keep-out time
 
