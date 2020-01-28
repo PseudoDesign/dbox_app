@@ -2,7 +2,7 @@ Feature: Latch control
 
   Scenario: idle object succeeds when unlatched
     Given a stale latch object
-    When the unlatch method is called
+    When the test latch unlatch method is called
     Then the latch pin is driven high
     And the unlatch method returns true
 
@@ -13,7 +13,7 @@ Feature: Latch control
   Scenario: fails when immediately unlatched
 
     Given a new latch object
-    When the unlatch method is called
+    When the test latch unlatch method is called
     Then the latch pin is driven low
     And the unlatch method returns false
 
@@ -21,7 +21,7 @@ Feature: Latch control
 
     Given a latched and released latch object
     When the system waits for <time_seconds> seconds
-    And the unlatch method is called
+    And the test latch unlatch method is called
     Then the latch pin is driven low
     And the unlatch method returns false
 
@@ -34,7 +34,7 @@ Feature: Latch control
 
   Scenario Outline: latch releases after timeout
     Given a stale latch object
-    When the unlatch method is called
+    When the test latch unlatch method is called
     And the system waits for <time_seconds> seconds
     Then the latch pin is driven <value>
 
@@ -45,9 +45,9 @@ Feature: Latch control
 
   Scenario Outline: multiple calls to unlatch don't reset timeout
     Given a stale latch object
-    When the unlatch method is called
+    When the test latch unlatch method is called
     And the system waits for <first_wait> seconds
-    And the unlatch method is called
+    And the test latch unlatch method is called
     And the system waits for <second_wait> seconds
     Then the latch pin is driven <value>
 
@@ -63,7 +63,7 @@ Feature: Latch control
 
     Given a latched and released latch object
     When the system waits for 10.25 seconds
-    And the unlatch method is called
+    And the test latch unlatch method is called
     Then the latch pin is driven high
     And the unlatch method returns true
 

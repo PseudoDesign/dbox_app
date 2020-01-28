@@ -33,12 +33,17 @@ def step_impl(context, latch_state):
         raise NotImplementedError()
 
 
-@when("the unlatch method is called")
-def step_impl(context):
+@when("the test latch {method} method is called")
+def step_impl(context, method):
     """
     :type context: behave.runner.Context
     """
-    context.unlatch_result = context.test_latch.unlatch()
+    if method == "release":
+        context.unlatch_result = context.test_latch.release()
+    elif method == "unlatch":
+        context.unlatch_result = context.test_latch.unlatch()
+    else:
+        raise NotImplementedError()
 
 
 @then("the unlatch method returns {bool_result}")
