@@ -149,7 +149,7 @@ class StateMachine(object):
 
     def _enter_unlatch_state(self):
         self.__led.disable()
-        if self.__latch.actuate():
+        if self.__latch.unlatch():
             self.__led.set_color(Color.GREEN)
         else:
             self.__led.set_color(Color.PINK)
