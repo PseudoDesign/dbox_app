@@ -12,7 +12,7 @@ Feature: dbox state machine unlatch state
     And the latch actuation <is_successful> successful
     When the button_press_and_release event is triggered
     Then the LED color is set to <led_color>
-    And the LED fade is set to 2 Hz
+    And the LED blink is set to 4 Hz
     And the latch is <latch_call>
 
     Examples:

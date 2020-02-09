@@ -16,7 +16,7 @@ class SignalHandler:
         signal.signal(signal.SIGTERM, self.set_exit_flag)
 
     @classmethod
-    def set_exit_flag(cls):
+    def set_exit_flag(cls, *args, **kwargs):
         """
         set the exit flag to TRUE
         :return:
