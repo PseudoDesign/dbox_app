@@ -153,7 +153,7 @@ class StateMachine(object):
             self.__led.set_color(Color.GREEN)
         else:
             self.__led.set_color(Color.PINK)
-        self.__led.blink(2, fade=True)
+        self.__led.blink(4)
 
     def _exit_unlatch_state(self):
         self.__latch.release()
