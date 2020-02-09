@@ -9,7 +9,7 @@ from time import sleep
 
 
 class SignalHandler:
-    exit = True
+    exit = False
 
     def __init__(self):
         signal.signal(signal.SIGINT, self.set_exit_flag)
