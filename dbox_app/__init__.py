@@ -6,6 +6,7 @@ import yaml
 import signal
 import sdnotify
 from time import sleep
+from sys import exit
 
 
 class SignalHandler:
@@ -62,7 +63,9 @@ def main():
         sleep(1)
 
     sd_notify.notify("STOPPING=1")
-
+    # Gracefully stop the hardware
     button.close()
     latch.close()
     led.close()
+    # Quit successfully
+    exit(0)
