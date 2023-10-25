@@ -29,7 +29,7 @@ def main():
     sd_notify = sdnotify.SystemdNotifier()
     signal_handler = SignalHandler()
     parser = argparse.ArgumentParser(description="Launcher for the dbox app")
-    parser.add_argument('-c', '--config_file', type=str, default="/etc/dbox/conf", help="Location of the config file")
+    parser.add_argument('-c', '--config_file', type=str, default="/etc/dbox/conf.yml", help="Location of the config file")
 
     args = parser.parse_args()
 
