@@ -59,3 +59,4 @@ type hints and docstrings located in the source code.
 #### Hardware Design
 
 TBD.  This project hit a snag with the latch used on the lockbox being susceptible to unlocking with a strong magnet.
+There's a Yocto meta layer for installing this project located here: `https://github.com/PseudoDesign/meta-dbox`
