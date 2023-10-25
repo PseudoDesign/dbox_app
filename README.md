@@ -32,6 +32,10 @@ led_b: 3
 lock_file: /nvm/lock.yaml
 ```
 
+RPi GPIO numbers for the RPi Zero are shown below.
+
+![RPi Zero GPIO Pinout](docs/images/rpi-zero-gpio.png)
+
 ## Developers Guide
 
 ### Set up development environment
@@ -59,4 +63,5 @@ type hints and docstrings located in the source code.
 #### Hardware Design
 
 TBD.  This project hit a snag with the latch used on the lockbox being susceptible to unlocking with a strong magnet.
+
 There's a Yocto meta layer for installing this project located here: `https://github.com/PseudoDesign/meta-dbox`
