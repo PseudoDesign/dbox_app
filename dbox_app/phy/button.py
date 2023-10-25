@@ -1,13 +1,14 @@
+from typing import Union
 from gpiozero import Button as PhyButton
 
 
 class Button(PhyButton):
-    def __init__(self, *args, hold_time=3, active_high=True, pull_up=None, **kwargs):
+    def __init__(self, pin: Union[int, str], hold_time=3, active_high=True, pull_up=None, **kwargs):
         """
         Extend the gpiozero Button class to include press-and-release functionality
         :param pin: GPIO number
         """
-        super().__init__(*args, hold_time=hold_time, active_state=active_high, pull_up=pull_up, **kwargs)
+        super().__init__(pin, hold_time=hold_time, active_state=active_high, pull_up=pull_up, **kwargs)
         self.__was_held = False
         self.on_press_and_release = None
         self.on_hold = None

@@ -129,7 +129,6 @@ class StateMachine(object):
         """
         return self.__secure_lock.is_locked
 
-
     def _enter_unlatch_failure_state(self):
         """
         Tasks to run when entering the unlatch failure state
