@@ -1,3 +1,4 @@
 ignore:
   - "features"
   - "tests"
+  - "dbox_app/__init__.py"
