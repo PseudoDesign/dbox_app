@@ -1,5 +1,7 @@
 # dbox-app
 
+[![codecov](https://codecov.io/gh/PseudoDesign/dbox_app/graph/badge.svg?token=DLKNKG964L)](https://codecov.io/gh/PseudoDesign/dbox_app)
+
 An application for running a simple lock box on a RaspberryPi.
 
 The device hardware consists of:
